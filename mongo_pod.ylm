@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mongodb
+  labels:
+    app: mongodb
+spec:
+  containers:
+  - name: mongodb
+    image: mongo
+    ports:
+    - containerPort: 27017
+    env:
+      - name: SECRET_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: mysecret
+            key: MONGO_INITDB_ROOT_USERNAME
+            optional: false 
+      - name: SECRET_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: mysecret
+            key: MONGO_INITDB_ROOT_PASSWORD
+            optional:
+                            
+  restartPolicy: Never
