@@ -1,0 +1,46 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: deploy-with-pvc
+  labels: 
+    app: nginx
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  strategy:
+    rollingUpdate:
+       maxSurge: 1
+       maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+       creationTimestamp: null
+       labels:
+         app: nginx
+    spec:
+     containers:
+     - image: nginx
+       imagePullPolicy: Always
+       name: nginx
+       volumeMounts:
+       - name: nfs-vol
+         mountPath: /opt
+       ports:
+       - containerPort: 80
+         protocol: TCP
+       resources: {}
+       terminationMessagePath: /dev/termination-log
+       terminationMessagePolicy: File
+     volumes:
+     - name: nfs-vol
+       persistentVolumeClaim:
+          claimName: mypvc1
+     dnsPolicy: ClusterFirst
+     restartPolicy: Always
+     schedulerName: default-scheduler
+     securityContext: {}
+     terminationGracePeriodSeconds: 30
+
+
